@@ -13,11 +13,10 @@ class Login extends Component {
   };
 
   verifyBtn = () => {
-    const numberNome = 6;
     const { email, nome } = this.state;
     const regex = /\S+@\S+\.\S+/;
     const verifyEmail = email && regex.test(email);
-    const verifyName = nome.length >= numberNome;
+    const verifyName = nome.length >= 1;
     this.setState({ isBtnDisabled: !(verifyEmail && verifyName) });
   };
 
@@ -25,14 +24,9 @@ class Login extends Component {
     const { isBtnDisabled } = this.state;
     return (
       <div>
-        <form
-          onSubmit={ this.handleButton }
-        >
+        <form>
           <div>
             <h2>Login</h2>
-          </div>
-          <div>
-            <img src={ logoTrybeWallet } alt="Logo da TrybeWallet" />
           </div>
           <div>
             <div>
