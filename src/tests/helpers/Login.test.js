@@ -44,5 +44,6 @@ describe('Testando a página Login', () => {
   const btnPlay = screen.getByTestId('btn-settings');
   userEvent.type(btnPlay, 'btn-settings');
   expect(btnPlay).toBeInTheDocument('btn-settings');
+  //precisei adicionar ao test as minhas alteraçoes no Login.js
   }) 
 });
