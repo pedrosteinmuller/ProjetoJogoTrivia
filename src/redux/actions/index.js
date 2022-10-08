@@ -1,9 +1,24 @@
-const setInfo = (info) => ({
+export const setInfo = (info) => ({
   type: 'SET_INFO',
   info,
 });
 
-const requisition = () => {
+export const setEmail = (email) => ({
+  type: 'SET_EMAIL',
+  email,
+});
+
+export const setName = (name) => ({
+  type: 'SET_NAME',
+  name,
+});
+
+export const setScore = (score) => ({
+  type: 'SET_SCORE',
+  score,
+});
+
+export const requisition = () => {
   const urlRequest = 'https://opentdb.com/api_token.php?command=request';
 
   return async (dispatch) => {
@@ -29,5 +44,3 @@ const requisition = () => {
     }
   };
 };
-
-export default requisition;
