@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 
 import Login from './pages/Login';
 import Game from './pages/Game';
@@ -9,12 +9,10 @@ import Config from './pages/Config';
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <Switch>
-        <Route exact path="/" component={ Login } />
-        <Route exact path="/config" component={ Config } />
-        <Route exact path="/game" component={ Game } />
-      </Switch>
-    </BrowserRouter>
+    <Switch>
+      <Route exact path="/" component={ Login } />
+      <Route path="/config" component={ Config } />
+      <Route path="/game" component={ Game } />
+    </Switch>
   );
 }
