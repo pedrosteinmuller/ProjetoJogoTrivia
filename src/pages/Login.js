@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import requisition from '../redux/actions';
+import { requisition, setEmail, setName } from '../redux/actions';
 
 class Login extends Component {
   state = {
@@ -24,17 +24,19 @@ class Login extends Component {
     this.setState({ isBtnDisabled: !(verifyEmail && verifyName) });
   };
 
-  handleClick = (e) => {
+  handleClick = () => {
     const { history } = this.props;
-    e.preventDefault();
     history.push('/config');
   };
 
-  startRequisition = async (e) => {
-    const { getData, history } = this.props;
+  startRequisition = (e) => {
+    const { nome, email } = this.state;
+    const { getData, history, name, mail } = this.props;
     e.preventDefault();
 
-    await getData();
+    name(nome);
+    mail(email);
+    getData();
 
     history.push('/game');
   };
@@ -44,7 +46,7 @@ class Login extends Component {
 
     return (
       <div>
-        <form onSubmit={ this.startRequisition }>
+        <form>
           <div>
             <h2>Login</h2>
           </div>
@@ -72,6 +74,7 @@ class Login extends Component {
                 type="submit"
                 data-testid="btn-play"
                 disabled={ isBtnDisabled }
+                onClick={ this.startRequisition }
               >
                 Play
               </button>
@@ -99,10 +102,14 @@ class Login extends Component {
 // };
 const mapDispatchToProps = (dispatch) => ({
   getData: () => dispatch(requisition()),
+  name: (state) => dispatch(setName(state)),
+  mail: (state) => dispatch(setEmail(state)),
 });
 
 Login.propTypes = {
   getData: PropTypes.func.isRequired,
+  name: PropTypes.func.isRequired,
+  mail: PropTypes.func.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func,
   }).isRequired,
