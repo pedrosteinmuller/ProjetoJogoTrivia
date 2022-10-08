@@ -39,4 +39,10 @@ describe('Testando a página Login', () => {
     userEvent.type(emailInput, 'pessoa@gmail.com');
     expect(emailInput.value).toBe('pessoa@gmail.com');
   });
+  test('Testa se existe um botão para ir em configurações', () => {
+      render(<Login />);
+  const btnPlay = screen.getByTestId('btn-settings');
+  userEvent.type(btnPlay, 'btn-settings');
+  expect(btnPlay).toBeInTheDocument('btn-settings');
+  }) 
 });
