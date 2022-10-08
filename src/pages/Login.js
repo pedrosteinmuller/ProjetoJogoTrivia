@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 import requisition from '../redux/actions';
 
@@ -22,6 +22,12 @@ class Login extends Component {
     const verifyEmail = email && regex.test(email);
     const verifyName = nome.length >= 1;
     this.setState({ isBtnDisabled: !(verifyEmail && verifyName) });
+  };
+
+  handleClick = (e) => {
+    const { history } = this.props;
+    e.preventDefault();
+    history.push('/config');
   };
 
   startRequisition = async (e) => {
@@ -69,6 +75,13 @@ class Login extends Component {
               >
                 Play
               </button>
+              <button
+                type="button"
+                data-testid="btn-settings"
+                onClick={ this.handleClick }
+              >
+                Configurações
+              </button>
             </div>
           </div>
         </form>
@@ -76,13 +89,20 @@ class Login extends Component {
     );
   }
 }
-
+// Login.propTypes = {
+//   history: PropTypes.shape({
+//     push: PropTypes.func,
+//   }),
+// };
+// Login.defaultProps = {
+//   history: { push: () => {} },
+// };
 const mapDispatchToProps = (dispatch) => ({
   getData: () => dispatch(requisition()),
 });
 
 Login.propTypes = {
-  getData: PropTypes.isRequired,
+  getData: PropTypes.func.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func,
   }).isRequired,
