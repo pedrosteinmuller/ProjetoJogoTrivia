@@ -14,7 +14,6 @@ class Game extends Component {
     const response = data.response_code;
 
     const validation = 3;
-    const number = 1000;
 
     if (validation === response) {
       localStorage.clear('token');
@@ -27,15 +26,11 @@ class Game extends Component {
       return arrayOptions.sort(() => Math.random() - randomNumber);
       // https://stackoverflow.com/questions/53591691/sorting-an-array-in-random-order
     });
-
     const object = Object(info[0]);
-
-    setTimeout(() => {
-      this.setState({
-        questionsDetails: object,
-        allQuestions: [...answersFromApi[0]],
-      });
-    }, number);
+    this.setState({
+      questionsDetails: object,
+      allQuestions: [...answersFromApi[0]],
+    });
   }
 
   render() {

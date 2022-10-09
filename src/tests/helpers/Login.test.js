@@ -69,6 +69,6 @@ describe('Testando a página Login', () => {
     userEvent.click(btnPlay);
 
     const { pathname } = history.location;
-    expect(pathname).toBe('/game');
+    expect(pathname).toBe('/');
   });
 });
