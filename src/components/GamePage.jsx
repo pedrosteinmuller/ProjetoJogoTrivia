@@ -20,17 +20,19 @@ class Game extends Component {
       history.push('/');
     }
 
-    const answersFromApi = info.map((item) => {
-      const arrayOptions = [item.correct_answer, ...item.incorrect_answers];
-      const randomNumber = 0.5;
-      return arrayOptions.sort(() => Math.random() - randomNumber);
+    if (response === 0) {
+      const answersFromApi = info.map((item) => {
+        const arrayOptions = [item.correct_answer, ...item.incorrect_answers];
+        const randomNumber = 0.5;
+        return arrayOptions.sort(() => Math.random() - randomNumber);
       // https://stackoverflow.com/questions/53591691/sorting-an-array-in-random-order
-    });
-    const object = Object(info[0]);
-    this.setState({
-      questionsDetails: object,
-      allQuestions: [...answersFromApi[0]],
-    });
+      });
+      const objects = Object(info[0]);
+      this.setState({
+        questionsDetails: objects,
+        allQuestions: [...answersFromApi[0]],
+      });
+    }
   }
 
   render() {
@@ -74,7 +76,11 @@ Game.propTypes = {
   }).isRequired,
   history: PropTypes.shape({
     push: PropTypes.func,
-  }).isRequired,
+  }),
+};
+
+Game.defaultProps = {
+  history: { push: () => {} },
 };
 
 const mapStateToProps = (state) => ({
