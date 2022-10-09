@@ -3,47 +3,51 @@ import PropTypes from 'prop-types';
 
 class Game extends Component {
   state = {
-    questions: [],
+    questionsDetails: [],
+    allQuestions: [],
   };
 
   async componentDidMount() {
+    const { history } = this.props;
+
+    const urlRequest = 'https://opentdb.com/api_token.php?command=request';
+    const requestToken = await fetch(urlRequest);
+    const jsonToken = await requestToken.json();
+
     const token = localStorage.getItem('token');
-    const responseApi = await fetch(`https://opentdb.com/api.php?amount=5&token=${token}`);
-    const data = await responseApi.json();
-    const numberFail = 3;
-    if (data.response_code === numberFail) {
-      const { history } = this.props;
-      localStorage.removeItem('token');
-      history.push('/');
-    }
+    const invalidToken = 3;
+    const url = `https://opentdb.com/api.php?amount=5&token=${token}`;
+    const request = await fetch(url);
+    const data = await request.json();
     if (data.response_code === 0) {
-      this.setState({
-        questions: data.results[0],
+      const answersFromApi = data.results.map((item) => {
+        const arrayOptions = [item.correct_answer, ...item.incorrect_answers];
+        const randomNumber = 0.5;
+        return arrayOptions.sort(() => Math.random() - randomNumber);
+        // https://stackoverflow.com/questions/53591691/sorting-an-array-in-random-order
       });
+      this.setState({
+        questionsDetails: data.results[0],
+        allQuestions: [...answersFromApi[0]],
+      });
+    } if (jsonToken.response_code === invalidToken) {
+      localStorage.clear();
+      history.push('/');
     }
   }
 
   render() {
-    const { questions } = this.state;
-    // console.log(questions);
-    const incorrectOptions = questions.incorrect_answers;
-    const correctOption = questions.correct_answer;
-    const options = [correctOption, incorrectOptions];
-    const sortOptions = options.sort();
+    const { questionsDetails, allQuestions } = this.state;
     return (
       <div>
-        <h3 data-testid="question-category">{ questions.category }</h3>
-        <h4 data-testid="question-text">{ questions.question }</h4>
+        <h3 data-testid="question-category">{ questionsDetails.category }</h3>
+        <h4 data-testid="question-text">{ questionsDetails.question }</h4>
         <div data-testid="answer-options">
-          { sortOptions.map((element, index) => {
-            if (element === correctOption) {
+          {allQuestions.map((question, index) => {
+            if (question === questionsDetails.correct_answer) {
               return (
-                <button
-                  type="button"
-                  key={ index }
-                  data-testid="correct-answer"
-                >
-                  { element }
+                <button type="button" key={ index } data-testid="correct-answer">
+                  {question}
                 </button>
               );
             }
@@ -53,10 +57,10 @@ class Game extends Component {
                 key={ index }
                 data-testid={ `wrong-answer-${index}` }
               >
-                { element }
+                {question}
               </button>
             );
-          }) }
+          })}
         </div>
       </div>
     );

@@ -51,7 +51,7 @@ describe('Testando a página Login', () => {
     expect(pathname).toBe('/config');
   });
   test('Testa se existe um botão para ir a tela de game', () => {
-    renderWithRouterAndRedux(<Login />);
+    const { history } = renderWithRouterAndRedux(<Login />);
 
     const email = screen.getByPlaceholderText(/email/i);
     userEvent.type(email, 'pessoa1@gmail.com');
@@ -67,5 +67,8 @@ describe('Testando a página Login', () => {
     expect(btnPlay).toBeInTheDocument();
 
     userEvent.click(btnPlay);
+
+    const { pathname } = history.location;
+    expect(pathname).toBe('/game');
   });
 });
