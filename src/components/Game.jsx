@@ -15,7 +15,7 @@ class Game extends Component {
     const jsonToken = await requestToken.json();
 
     const token = localStorage.getItem('token');
-    const invalidToken = 3;
+    // const invalidToken = 3;
     const url = `https://opentdb.com/api.php?amount=5&token=${token}`;
     const request = await fetch(url);
     const data = await request.json();
@@ -30,7 +30,7 @@ class Game extends Component {
         questionsDetails: data.results[0],
         allQuestions: [...answersFromApi[0]],
       });
-    } if (jsonToken.response_code === invalidToken) {
+    } if (jsonToken.response_code !== 0) {
       localStorage.clear();
       history.push('/');
     }
@@ -70,7 +70,9 @@ class Game extends Component {
 Game.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func,
-  }).isRequired,
+  }),
 };
-
+Game.defaultProps = {
+  history: { push: () => {} },
+};
 export default Game;
