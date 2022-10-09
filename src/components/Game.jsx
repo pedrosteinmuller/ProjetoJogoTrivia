@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 class Game extends Component {
@@ -7,39 +8,41 @@ class Game extends Component {
     allQuestions: [],
   };
 
-  async componentDidMount() {
-    const { history } = this.props;
+  componentDidMount() {
+    const { data, history } = this.props;
+    const info = data.results;
+    const response = data.response_code;
 
-    const urlRequest = 'https://opentdb.com/api_token.php?command=request';
-    const requestToken = await fetch(urlRequest);
-    const jsonToken = await requestToken.json();
+    const validation = 3;
+    const number = 1000;
 
-    const token = localStorage.getItem('token');
-    const invalidToken = 3;
-    const url = `https://opentdb.com/api.php?amount=5&token=${token}`;
-    const request = await fetch(url);
-    const data = await request.json();
-    if (data.response_code === 0) {
-      const answersFromApi = data.results.map((item) => {
-        const arrayOptions = [item.correct_answer, ...item.incorrect_answers];
-        const randomNumber = 0.5;
-        return arrayOptions.sort(() => Math.random() - randomNumber);
-        // https://stackoverflow.com/questions/53591691/sorting-an-array-in-random-order
-      });
-      this.setState({
-        questionsDetails: data.results[0],
-        allQuestions: [...answersFromApi[0]],
-      });
-    } if (jsonToken.response_code === invalidToken) {
-      localStorage.clear();
+    if (validation === response) {
+      localStorage.clear('token');
       history.push('/');
     }
+
+    const answersFromApi = info.map((item) => {
+      const arrayOptions = [item.correct_answer, ...item.incorrect_answers];
+      const randomNumber = 0.5;
+      return arrayOptions.sort(() => Math.random() - randomNumber);
+      // https://stackoverflow.com/questions/53591691/sorting-an-array-in-random-order
+    });
+
+    const object = Object(info[0]);
+
+    setTimeout(() => {
+      this.setState({
+        questionsDetails: object,
+        allQuestions: [...answersFromApi[0]],
+      });
+    }, number);
   }
 
   render() {
     const { questionsDetails, allQuestions } = this.state;
+
     return (
-      <div>
+      <main>
         <h3 data-testid="question-category">{ questionsDetails.category }</h3>
         <h4 data-testid="question-text">{ questionsDetails.question }</h4>
         <div data-testid="answer-options">
@@ -62,15 +65,25 @@ class Game extends Component {
             );
           })}
         </div>
-      </div>
+      </main>
     );
   }
 }
 
 Game.propTypes = {
+  data: PropTypes.shape({
+    response_code: PropTypes.number,
+    results: PropTypes.shape({
+      map: PropTypes.func,
+    }),
+  }).isRequired,
   history: PropTypes.shape({
     push: PropTypes.func,
   }).isRequired,
 };
 
-export default Game;
+const mapStateToProps = (state) => ({
+  data: state.dataApi.info,
+});
+
+export default connect(mapStateToProps)(Game);
