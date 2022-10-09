@@ -40,7 +40,7 @@ export const requisition = () => {
       const request = await fetch(url);
       const json = await request.json();
 
-      dispatch(setInfo(json.results));
+      dispatch(setInfo(json));
     }
   };
 };
