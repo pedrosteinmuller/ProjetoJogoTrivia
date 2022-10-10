@@ -5,8 +5,7 @@ import PropTypes from 'prop-types';
 
 import './GamePage.css';
 import {
-  setTimer, setStopTimer, setRestartTimer,
-  setScore, setAssertion,
+  setTimer, setStopTimer, setRestartTimer, setScore, setAssertion,
 } from '../redux/actions';
 
 class Game extends Component {
