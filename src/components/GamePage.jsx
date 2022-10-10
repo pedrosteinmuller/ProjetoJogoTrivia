@@ -14,32 +14,32 @@ class Game extends Component {
 
   componentDidMount() {
     const number = 1300;
-    setTimeout(() => {
-      const { data, history } = this.props;
-      const info = data.results;
-      const response = data.response_code;
 
-      const validation = 3;
+    const { data, history } = this.props;
+    const info = data.results;
+    const response = data.response_code;
 
-      if (validation === response) {
-        localStorage.clear('token');
-        history.push('/');
-      }
+    const validation = 3;
 
-      if (response === 0) {
-        const answersFromApi = info.map((item) => {
-          const arrayOptions = [item.correct_answer, ...item.incorrect_answers];
-          const randomNumber = 0.5;
-          return arrayOptions.sort(() => Math.random() - randomNumber);
+    if (validation === response) {
+      localStorage.clear('token');
+      history.push('/');
+    }
+
+    if (response === 0) {
+      const answersFromApi = info.map((item) => {
+        const arrayOptions = [item.correct_answer, ...item.incorrect_answers];
+        const randomNumber = 0.5;
+        return arrayOptions.sort(() => Math.random() - randomNumber);
         // https://stackoverflow.com/questions/53591691/sorting-an-array-in-random-order
-        });
-        const objects = Object(info[0]);
-        this.setState({
-          questionsDetails: objects,
-          allQuestions: [...answersFromApi[0]],
-        });
-      }
-    }, number);
+      });
+      const objects = Object(info[0]);
+
+      this.setState({
+        questionsDetails: objects,
+        allQuestions: [...answersFromApi[0]],
+      });
+    }
   }
 
   handleClick = (question) => {
