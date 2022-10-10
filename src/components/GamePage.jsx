@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import './GamePage.css';
+import { setTimer, setStopTimer, setRestartTimer, setScore } from '../redux/actions';
 
 class Game extends Component {
   state = {
@@ -10,10 +11,16 @@ class Game extends Component {
     allQuestions: [],
     green: '',
     red: '',
+    showButton: false,
+    responseIndex: 0,
+    questionIndex: 0,
+    timeout: false,
+    count: 30,
+    level: '',
   };
 
   componentDidMount() {
-    const { data, history } = this.props;
+    const { data, history, time, globalCount } = this.props;
     const info = data.results;
     const response = data.response_code;
 
@@ -25,36 +32,103 @@ class Game extends Component {
     }
 
     if (response === 0) {
+      const { responseIndex, questionIndex } = this.state;
+
       const answersFromApi = info.map((item) => {
         const arrayOptions = [item.correct_answer, ...item.incorrect_answers];
         const randomNumber = 0.5;
         return arrayOptions.sort(() => Math.random() - randomNumber);
         // https://stackoverflow.com/questions/53591691/sorting-an-array-in-random-order
       });
-      const objects = Object(info[0]);
 
-      this.setState({
+      const objects = Object(info[questionIndex]);
+      console.log(objects.correct_answer);
+
+      this.setState((state) => ({
         questionsDetails: objects,
-        allQuestions: [...answersFromApi[0]],
+        allQuestions: [...answersFromApi[responseIndex]],
+        responseIndex: state.responseIndex + 1,
+        questionIndex: state.questionIndex + 1,
+      }));
+    }
+
+    const interrupt = 1000;
+
+    const id = setInterval(() => {
+      globalCount();
+      this.setState((state) => ({ count: state.count - 1 }), () => {
+        const { count } = this.state;
+        if (count === 0) {
+          this.setState({ count: 0, timeout: true });
+        }
       });
+    }, interrupt);
+
+    if (time === 0) {
+      clearInterval(id);
     }
   }
 
   handleClick = (question) => {
-    const { questionsDetails } = this.state;
+    const { questionsDetails, count, level } = this.state;
     const correct = questionsDetails.correct_answer;
+    const { difficulty } = questionsDetails;
+    const { pointer, stop } = this.props;
+
+    if (difficulty === 'easy') {
+      this.setState({ level: 1 });
+    } else if (difficulty === 'medium') {
+      this.setState({ level: 2 });
+    } else if (difficulty === 'hard') {
+      this.setState({ level: 3 });
+    }
 
     if (correct === question) {
-      this.setState({ green: 'green', red: 'red' });
+      const ten = 10;
+      this.setState({ green: 'green', red: 'red', showButton: true });
+      const score = ten + (count * level);
+      pointer(score);
+      stop();
     }
 
     if (question !== correct) {
-      this.setState({ red: 'red', green: 'green' });
+      this.setState({ red: 'red', green: 'green', showButton: true });
     }
   };
 
+  nextQuestion = () => {
+    const { data, restart, globalCount } = this.props;
+    const { responseIndex, questionIndex } = this.state;
+    const info = data.results;
+
+    const answers = info.map((item) => {
+      const options = [item.correct_answer, ...item.incorrect_answers];
+      const randomNumber = 0.5;
+      return options.sort(() => Math.random() - randomNumber);
+      // https://stackoverflow.com/questions/53591691/sorting-an-array-in-random-order
+    });
+
+    const objects = Object(info[questionIndex]);
+
+    this.setState((state) => ({
+      questionsDetails: objects,
+      allQuestions: [...answers[responseIndex]],
+      responseIndex: state.responseIndex + 1,
+      questionIndex: state.questionIndex + 1,
+      green: '',
+      red: '',
+      count: 30,
+    }));
+
+    restart();
+    globalCount();
+  };
+
   render() {
-    const { questionsDetails, allQuestions, green, red } = this.state;
+    const {
+      questionsDetails, allQuestions,
+      green, red, showButton, timeout,
+    } = this.state;
 
     return (
       <main>
@@ -67,6 +141,7 @@ class Game extends Component {
                 <button
                   type="button"
                   key={ index }
+                  disabled={ timeout }
                   className={ green }
                   onClick={ () => this.handleClick(question) }
                   data-testid="correct-answer"
@@ -80,6 +155,7 @@ class Game extends Component {
                 type="button"
                 key={ index }
                 className={ red }
+                disabled={ timeout }
                 onClick={ () => this.handleClick(question) }
                 data-testid={ `wrong-answer-${index}` }
               >
@@ -87,6 +163,17 @@ class Game extends Component {
               </button>
             );
           })}
+          {
+            showButton && (
+              <button
+                type="button"
+                data-testid="btn-next"
+                onClick={ this.nextQuestion }
+              >
+                Next
+              </button>
+            )
+          }
         </div>
       </main>
     );
@@ -98,11 +185,17 @@ Game.propTypes = {
     response_code: PropTypes.number,
     results: PropTypes.shape({
       map: PropTypes.func,
-    }),
+    }).isRequired,
   }).isRequired,
+  globalCount: PropTypes.func.isRequired,
   history: PropTypes.shape({
-    push: PropTypes.func,
+    push: PropTypes.func.isRequired,
   }),
+  pointer: PropTypes.func.isRequired,
+  push: PropTypes.func.isRequired,
+  restart: PropTypes.func.isRequired,
+  stop: PropTypes.func.isRequired,
+  time: PropTypes.number.isRequired,
 };
 
 Game.defaultProps = {
@@ -111,6 +204,14 @@ Game.defaultProps = {
 
 const mapStateToProps = (state) => ({
   data: state.dataApi.info,
+  time: state.player.timer,
 });
 
-export default connect(mapStateToProps)(Game);
+const mapDispatchToProps = (dispatch) => ({
+  globalCount: () => dispatch(setTimer()),
+  pointer: (state) => dispatch(setScore(state)),
+  stop: () => dispatch(setStopTimer()),
+  restart: () => dispatch(setRestartTimer()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Game);

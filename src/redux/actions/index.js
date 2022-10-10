@@ -18,6 +18,18 @@ export const setScore = (score) => ({
   score,
 });
 
+export const setTimer = () => ({
+  type: 'SET_TIMER',
+});
+
+export const setStopTimer = () => ({
+  type: 'SET_STOP_TIMER',
+});
+
+export const setRestartTimer = () => ({
+  type: 'SET_RESTART_TIMER',
+});
+
 export const requisition = () => {
   const urlRequest = 'https://opentdb.com/api_token.php?command=request';
 
