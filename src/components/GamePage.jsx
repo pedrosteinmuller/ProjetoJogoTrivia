@@ -13,8 +13,6 @@ class Game extends Component {
   };
 
   componentDidMount() {
-    const number = 1300;
-
     const { data, history } = this.props;
     const info = data.results;
     const response = data.response_code;
