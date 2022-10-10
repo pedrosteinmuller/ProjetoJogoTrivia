@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
@@ -17,10 +18,11 @@ class Game extends Component {
     timeout: false,
     count: 30,
     level: '',
+    showFeedback: false,
   };
 
   componentDidMount() {
-    const { data, history, time, globalCount } = this.props;
+    const { data, history, globalCount, time } = this.props;
     const info = data.results;
     const response = data.response_code;
 
@@ -52,20 +54,22 @@ class Game extends Component {
     }
 
     const interrupt = 1000;
+    const timeout = 100;
 
-    const id = setInterval(() => {
-      globalCount();
-      this.setState((state) => ({ count: state.count - 1 }), () => {
-        const { count } = this.state;
-        if (count === 0) {
-          this.setState({ count: 0, timeout: true });
-        }
-      });
-    }, interrupt);
-
-    if (time === 0) {
-      clearInterval(id);
-    }
+    setTimeout(() => {
+      const id = setInterval(() => {
+        globalCount();
+        this.setState((state) => ({ count: state.count - 1 }), () => {
+          const { count } = this.state;
+          if (count === 0) {
+            this.setState({ count: 0, timeout: true });
+          }
+        });
+      }, interrupt);
+      if (time === 0) {
+        clearInterval(id);
+      }
+    }, timeout);
   }
 
   handleClick = (question) => {
@@ -85,47 +89,59 @@ class Game extends Component {
     if (correct === question) {
       const ten = 10;
       this.setState({ green: 'green', red: 'red', showButton: true });
-      const score = ten + (count * level);
-      pointer(score);
+      const score = Number(ten + (count * level));
       stop();
+      clearInterval();
+      pointer(score);
+      this.setState({ count: 30 });
     }
 
     if (question !== correct) {
-      this.setState({ red: 'red', green: 'green', showButton: true });
+      stop(count);
+      clearInterval();
+      this.setState({ red: 'red', green: 'green', showButton: true, count: 31 });
     }
   };
 
   nextQuestion = () => {
     const { data, restart, globalCount } = this.props;
-    const { responseIndex, questionIndex } = this.state;
+    const { questionIndex, responseIndex } = this.state;
     const info = data.results;
+    const timeout = 300;
+    const five = 5;
 
-    const answers = info.map((item) => {
-      const options = [item.correct_answer, ...item.incorrect_answers];
-      const randomNumber = 0.5;
-      return options.sort(() => Math.random() - randomNumber);
-      // https://stackoverflow.com/questions/53591691/sorting-an-array-in-random-order
-    });
+    if (responseIndex < five) {
+      const answers = info.map((item) => {
+        const options = [item.correct_answer, ...item.incorrect_answers];
+        const randomNumber = 0.5;
+        return options.sort(() => Math.random() - randomNumber);
+        // https://stackoverflow.com/questions/53591691/sorting-an-array-in-random-order
+      });
 
-    const objects = Object(info[questionIndex]);
+      const objects = Object(info[questionIndex]);
 
-    this.setState((state) => ({
-      questionsDetails: objects,
-      allQuestions: [...answers[responseIndex]],
-      responseIndex: state.responseIndex + 1,
-      questionIndex: state.questionIndex + 1,
-      green: '',
-      red: '',
-      count: 30,
-    }));
+      this.setState((state) => ({
+        questionsDetails: objects,
+        allQuestions: Array(...answers[responseIndex]) || [],
+        responseIndex: state.responseIndex + 1,
+        questionIndex: state.questionIndex + 1,
+        green: '',
+        red: '',
+        count: 31,
+      }));
 
-    restart();
-    globalCount();
+      setTimeout(() => {
+        restart();
+        globalCount();
+      }, timeout);
+    } else {
+      this.setState({ showFeedback: true });
+    }
   };
 
   render() {
     const {
-      questionsDetails, allQuestions,
+      questionsDetails, allQuestions, showFeedback,
       green, red, showButton, timeout,
     } = this.state;
 
@@ -174,6 +190,9 @@ class Game extends Component {
             )
           }
         </div>
+        {
+          showFeedback && <Redirect to="/feedback" />
+        }
       </main>
     );
   }
@@ -209,7 +228,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   globalCount: () => dispatch(setTimer()),
   pointer: (state) => dispatch(setScore(state)),
-  stop: () => dispatch(setStopTimer()),
+  stop: (state) => dispatch(setStopTimer(state)),
   restart: () => dispatch(setRestartTimer()),
 });
 
