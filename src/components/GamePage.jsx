@@ -4,7 +4,10 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import './GamePage.css';
-import { setTimer, setStopTimer, setRestartTimer, setScore } from '../redux/actions';
+import {
+  setTimer, setStopTimer, setRestartTimer,
+  setScore, setAssertion,
+} from '../redux/actions';
 
 class Game extends Component {
   state = {
@@ -76,7 +79,7 @@ class Game extends Component {
     const { questionsDetails, count, level } = this.state;
     const correct = questionsDetails.correct_answer;
     const { difficulty } = questionsDetails;
-    const { pointer, stop } = this.props;
+    const { pointer, stop, assertions } = this.props;
 
     if (difficulty === 'easy') {
       this.setState({ level: 1 });
@@ -93,6 +96,8 @@ class Game extends Component {
       pointer(score);
       stop();
       clearInterval();
+      pointer(score);
+      assertions();
       this.setState({ count: 30 });
     }
     if (question !== correct) {
@@ -205,6 +210,7 @@ Game.propTypes = {
     }).isRequired,
   }).isRequired,
   globalCount: PropTypes.func.isRequired,
+  assertions: PropTypes.func.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }),
@@ -229,6 +235,7 @@ const mapDispatchToProps = (dispatch) => ({
   pointer: (state) => dispatch(setScore(state)),
   stop: (state) => dispatch(setStopTimer(state)),
   restart: () => dispatch(setRestartTimer()),
+  assertions: () => dispatch(setAssertion()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Game);
