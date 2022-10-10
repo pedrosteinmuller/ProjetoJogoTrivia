@@ -89,13 +89,12 @@ class Game extends Component {
     if (correct === question) {
       const ten = 10;
       this.setState({ green: 'green', red: 'red', showButton: true });
-      const score = Number(ten + (count * level));
+      const score = ten + (count * level);
+      pointer(score);
       stop();
       clearInterval();
-      pointer(score);
       this.setState({ count: 30 });
     }
-
     if (question !== correct) {
       stop(count);
       clearInterval();
