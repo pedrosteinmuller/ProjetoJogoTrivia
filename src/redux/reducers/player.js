@@ -20,6 +20,8 @@ const player = (state = initialState, action) => {
     return { ...state, timer: 0 };
   case 'SET_RESTART_TIMER':
     return { ...state, timer: 31 };
+  case 'SET_ASSERTION':
+    return { ...state, assertions: state.assertions + 1 };
   default:
     return state;
   }
