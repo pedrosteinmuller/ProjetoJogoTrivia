@@ -13,13 +13,15 @@ const player = (state = initialState, action) => {
   case 'SET_NAME':
     return { ...state, name: action.name };
   case 'SET_SCORE':
-    return { ...state, score: action.score };
+    return { ...state, score: action.score + state.score };
   case 'SET_TIMER':
     return { ...state, timer: (state.timer >= 1 ? state.timer - 1 : 0) };
   case 'SET_STOP_TIMER':
-    return { ...state, timer: state.timer };
+    return { ...state, timer: 0 };
   case 'SET_RESTART_TIMER':
-    return { ...state, timer: 30 };
+    return { ...state, timer: 31 };
+  case 'SET_ASSERTION':
+    return { ...state, assertions: state.assertions + 1 };
   default:
     return state;
   }

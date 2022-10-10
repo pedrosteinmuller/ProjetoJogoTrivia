@@ -30,6 +30,10 @@ export const setRestartTimer = () => ({
   type: 'SET_RESTART_TIMER',
 });
 
+export const setAssertion = () => ({
+  type: 'SET_ASSERTION',
+});
+
 export const requisition = () => {
   const urlRequest = 'https://opentdb.com/api_token.php?command=request';
 
