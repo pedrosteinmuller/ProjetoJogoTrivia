@@ -32,7 +32,7 @@ class Login extends Component {
   startRequisition = (e) => {
     const { nome, email } = this.state;
     const { getData, history, name, mail } = this.props;
-    const number = 1800;
+    const number = 1500;
     e.preventDefault();
 
     name(nome);
