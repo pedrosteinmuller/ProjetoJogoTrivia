@@ -32,7 +32,7 @@ class Game extends Component {
     }
 
     if (response === 0) {
-      const { responseIndex, questionIndex } = this.state;
+      const { questionIndex } = this.state;
 
       const answersFromApi = info.map((item) => {
         const arrayOptions = [item.correct_answer, ...item.incorrect_answers];
@@ -42,11 +42,10 @@ class Game extends Component {
       });
 
       const objects = Object(info[questionIndex]);
-      console.log(objects.correct_answer);
 
       this.setState((state) => ({
         questionsDetails: objects,
-        allQuestions: [...answersFromApi[responseIndex]],
+        allQuestions: [...answersFromApi[0]],
         responseIndex: state.responseIndex + 1,
         questionIndex: state.questionIndex + 1,
       }));
