@@ -5,7 +5,8 @@ import PropTypes from 'prop-types';
 
 import './GamePage.css';
 import {
-  setTimer, setStopTimer, setRestartTimer, setScore, setAssertion,
+  setTimer, setStopTimer, setRestartTimer,
+  setScore, setAssertion,
 } from '../redux/actions';
 
 class Game extends Component {
@@ -27,26 +28,20 @@ class Game extends Component {
     const { data, history, globalCount, time } = this.props;
     const info = data.results;
     const response = data.response_code;
-
     const validation = 3;
-
     if (validation === response) {
       localStorage.clear('token');
       history.push('/');
     }
-
     if (response === 0) {
       const { questionIndex } = this.state;
-
       const answersFromApi = info.map((item) => {
         const arrayOptions = [item.correct_answer, ...item.incorrect_answers];
         const randomNumber = 0.5;
         return arrayOptions.sort(() => Math.random() - randomNumber);
         // https://stackoverflow.com/questions/53591691/sorting-an-array-in-random-order
       });
-
       const objects = Object(info[questionIndex]);
-
       this.setState((state) => ({
         questionsDetails: objects,
         allQuestions: [...answersFromApi[0]],
@@ -54,10 +49,8 @@ class Game extends Component {
         questionIndex: state.questionIndex + 1,
       }));
     }
-
     const interrupt = 1000;
     const timeout = 100;
-
     setTimeout(() => {
       const id = setInterval(() => {
         globalCount();
@@ -87,7 +80,6 @@ class Game extends Component {
     } else if (difficulty === 'hard') {
       this.setState({ level: 3 });
     }
-
     if (correct === question) {
       const ten = 10;
       this.setState({ green: 'green', red: 'red', showButton: true });
@@ -112,7 +104,6 @@ class Game extends Component {
     const info = data.results;
     const timeout = 300;
     const five = 5;
-
     if (responseIndex < five) {
       const answers = info.map((item) => {
         const options = [item.correct_answer, ...item.incorrect_answers];
@@ -120,9 +111,7 @@ class Game extends Component {
         return options.sort(() => Math.random() - randomNumber);
         // https://stackoverflow.com/questions/53591691/sorting-an-array-in-random-order
       });
-
       const objects = Object(info[questionIndex]);
-
       this.setState((state) => ({
         questionsDetails: objects,
         allQuestions: Array(...answers[responseIndex]) || [],
@@ -132,7 +121,6 @@ class Game extends Component {
         red: '',
         count: 31,
       }));
-
       setTimeout(() => {
         restart();
         globalCount();
@@ -147,7 +135,6 @@ class Game extends Component {
       questionsDetails, allQuestions, showFeedback,
       green, red, showButton, timeout,
     } = this.state;
-
     return (
       <main>
         <h3 data-testid="question-category">{ questionsDetails.category }</h3>
@@ -200,7 +187,6 @@ class Game extends Component {
     );
   }
 }
-
 Game.propTypes = {
   data: PropTypes.shape({
     response_code: PropTypes.number,
@@ -219,16 +205,13 @@ Game.propTypes = {
   stop: PropTypes.func.isRequired,
   time: PropTypes.number.isRequired,
 };
-
 Game.defaultProps = {
   history: { push: () => {} },
 };
-
 const mapStateToProps = (state) => ({
   data: state.dataApi.info,
   time: state.player.timer,
 });
-
 const mapDispatchToProps = (dispatch) => ({
   globalCount: () => dispatch(setTimer()),
   pointer: (state) => dispatch(setScore(state)),

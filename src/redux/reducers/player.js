@@ -5,7 +5,6 @@ const initialState = {
   gravatarEmail: '',
   timer: 30,
 };
-
 const player = (state = initialState, action) => {
   switch (action.type) {
   case 'SET_EMAIL':
@@ -26,5 +25,4 @@ const player = (state = initialState, action) => {
     return state;
   }
 };
-
 export default player;
