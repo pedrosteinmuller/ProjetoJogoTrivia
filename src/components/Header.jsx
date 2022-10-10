@@ -5,7 +5,7 @@ import md5 from 'crypto-js/md5';
 
 class Header extends Component {
   render() {
-    const { score, name, gravatar } = this.props;
+    const { score, name, gravatar, timer } = this.props;
     const hash = md5(gravatar).toString();
 
     return (
@@ -24,11 +24,15 @@ class Header extends Component {
           alt={ `Imagem de ${name}` }
         />
 
-        <h1
+        <h2
           data-testid="header-player-name"
         >
           { name }
-        </h1>
+        </h2>
+
+        <span>
+          { `Timer: ${timer}` }
+        </span>
 
         <span
           data-testid="header-score"
@@ -45,12 +49,14 @@ Header.propTypes = {
   gravatar: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   score: PropTypes.number.isRequired,
+  timer: PropTypes.number.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   gravatar: state.player.gravatarEmail,
   name: state.player.name,
   score: state.player.score,
+  timer: state.player.timer,
 });
 
 export default connect(mapStateToProps)(Header);
