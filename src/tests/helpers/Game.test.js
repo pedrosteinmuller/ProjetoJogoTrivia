@@ -3,7 +3,7 @@ import { screen } from '@testing-library/react';
 import { renderWithRouterAndRedux } from './renderWithRouterAndRedux';
 
 import Game from '../../pages/Game';
-test.only
+
 describe('Testando a página Game', () => {
   test('Deve possuir a categoria da questão', async () => {
     renderWithRouterAndRedux(<Game />);
