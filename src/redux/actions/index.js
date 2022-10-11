@@ -28,6 +28,11 @@ export const setAssertion = () => ({
   type: 'SET_ASSERTION',
 });
 
+export const clearScore = (score) => ({
+  type: 'CLEAR_SCORE',
+  score,
+});
+
 export const requisition = () => {
   const urlRequest = 'https://opentdb.com/api_token.php?command=request';
 
