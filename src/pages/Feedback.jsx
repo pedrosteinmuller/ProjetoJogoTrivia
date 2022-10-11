@@ -48,3 +48,4 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps)(Feedback);
+// Fix.
