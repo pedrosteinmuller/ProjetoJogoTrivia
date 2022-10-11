@@ -23,7 +23,7 @@ class Feedback extends Component {
   };
 
   render() {
-    const { total, assertions, history, name, score, gravatar } = this.props;
+    const { total, assertions, history } = this.props;
     const { niceTry } = this.state;
 
     return (
@@ -63,25 +63,6 @@ class Feedback extends Component {
         >
           Play Again
         </button>
-        <div>
-          <img
-            data-testid="header-profile-picture"
-            src={ `https://www.gravatar.com/avatar/${gravatar}` }
-            style={ { width: '30px', borderRadius: '5px' } }
-            alt={ `Imagem de ${name}` }
-          />
-
-          <h2
-            data-testid="header-player-name"
-          >
-            { name }
-          </h2>
-
-          <span data-testid="header-score">
-            {score}
-
-          </span>
-        </div>
       </main>
     );
   }
@@ -93,17 +74,11 @@ Feedback.propTypes = {
     push: PropTypes.func,
   }).isRequired,
   total: PropTypes.number.isRequired,
-  score: PropTypes.number.isRequired,
-  name: PropTypes.string.isRequired,
-  gravatar: PropTypes.string.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   total: state.player.score,
   assertions: state.player.assertions,
-  gravatar: state.player.gravatarEmail,
-  name: state.player.name,
-  score: state.player.score,
 });
 
 export default connect(mapStateToProps)(Feedback);
