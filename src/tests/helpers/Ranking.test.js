@@ -36,3 +36,4 @@ describe('Testando a página Ranking', () => {
     expect(playerScore).toBeInTheDocument();
   });
 });
+//teste
