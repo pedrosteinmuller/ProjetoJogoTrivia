@@ -20,7 +20,7 @@ class Feedback extends Component {
   render() {
     const { total, assertions, history } = this.props;
     const { niceTry } = this.state;
-    
+
     return (
       <main>
         <h1>Feedback</h1>
@@ -70,4 +70,3 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps)(Feedback);
-// Fix.
