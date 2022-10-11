@@ -17,6 +17,11 @@ class Feedback extends Component {
     }
   }
 
+  returnToLogin = () => {
+    const { history: { push } } = this.props;
+    return push('/');
+  };
+
   render() {
     const { total, assertions, history } = this.props;
     const { niceTry } = this.state;
@@ -50,6 +55,13 @@ class Feedback extends Component {
           onClick={ () => history.push('/ranking') }
         >
           Ranking
+        </button>
+        <button
+          type="button"
+          onClick={ this.returnToLogin }
+          data-testid="btn-play-again"
+        >
+          Play Again
         </button>
       </main>
     );
