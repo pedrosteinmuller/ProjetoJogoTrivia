@@ -1,13 +1,18 @@
-# :construction: README customizado em construção ! :construction:
-<!-- Olá, Tryber!
-Esse é apenas um arquivo inicial para o README do seu projeto no qual você pode customizar e reutilizar todas as vezes que for executar o trybe-publisher.
+# Projeto Trivia 👾🎮
 
-Para deixá-lo com a sua cara, basta alterar o seguinte arquivo da sua máquina: ~/.student-repo-publisher/custom/_NEW_README.md
+Aplicação web construída em grupo, que consiste em um jogo de perguntas e respostas.
 
-É essencial que você preencha esse documento por conta própria, ok?
-Não deixe de usar nossas dicas de escrita de README de projetos, e deixe sua criatividade brilhar!
-:warning: IMPORTANTE: você precisa deixar nítido:
-- quais arquivos/pastas foram desenvolvidos por você; 
-- quais arquivos/pastas foram desenvolvidos por outra pessoa estudante;
-- quais arquivos/pastas foram desenvolvidos pela Trybe.
--->
+* Construída utilizado React, Redux e CSS3.
+* Aplicação das metodologia ágeis: Kanban e Scrum.
+
+### Instruções
+
+- Para rodar a aplicação localmente, realize o clone do projeto e utilize os comandos a seguir para inicializar:
+
+```
+npm install // para instalar as dependências
+npm start // para iniciar a aplicação
+npm test // para rodar os testes da aplicação
+```
+
+👨🏻‍💻 **Acessar:** _[Clique Aqui](https://projeto-jogo-trivia.vercel.app/)_
